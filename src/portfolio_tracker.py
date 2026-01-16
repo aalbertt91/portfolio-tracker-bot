@@ -162,3 +162,11 @@ dfreport = pd.DataFrame({
     "Daily PnL": df["daily_pnl"],
     "Total PnL": df["total_pnl"]
 })
+
+REPORTS_DIR = BASE_DIR / "reports"
+REPORTS_DIR.mkdir(parents=True, exist_ok=True)
+
+# Generate Excel report
+dfreport.to_excel(REPORTS_DIR / "portfolio_report.xlsx", index=False)
+
+logging.info("Excel report generated successfully.")
