@@ -170,3 +170,17 @@ REPORTS_DIR.mkdir(parents=True, exist_ok=True)
 dfreport.to_excel(REPORTS_DIR / "portfolio_report.xlsx", index=False)
 
 logging.info("Excel report generated successfully.")
+
+hreshold = 1000
+
+# Trigger Telegram alert if PnL exceeds threshold
+if total_pnl > threshold:
+    message = f"Total PnL is above {threshold}! Current PnL: {total_pnl:.2f}"
+    requests.post(f"https://api.telegram.org/bot{bottoken}/sendMessage",
+                  data={
+                      "chat_id": chatid,
+                      "text": message
+                  })
+    logging.info("Telegram alert sent!")
+else:
+    logging.info("PnL threshold not reached.")
