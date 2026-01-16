@@ -112,3 +112,53 @@ else:
     logging.info("All today's stock data already exists in DB.")
 
 session.close()
+
+Session = sessionmaker(bind=engine)
+session = Session()
+
+subquery = session.query(StockPrice.stock,
+                         func.max(StockPrice.date).label("max_date")).group_by(
+                             StockPrice.stock).subquery()
+
+latest_data = session.query(StockPrice).join(
+    subquery, (StockPrice.stock == subquery.c.stock) &
+    (StockPrice.date == subquery.c.max_date)).all()
+
+df_prices = pd.DataFrame([(s.stock, s.price, s.close, s.date)
+                          for s in latest_data],
+                         columns=["Stock", "Price", "Close", "Date"])
+
+print(df_prices)
+session.close()
+
+dfcsv = pd.read_csv(DATA_DIR / "portfolio.csv", sep=';')
+
+quantities = dfcsv["quantity"]
+print(quantities)
+
+dfcsv = dfcsv.rename(columns={"symbol": "Stock"})
+
+df = pd.merge(df_prices, dfcsv, on="Stock", how="inner")
+print(df)
+
+# DAILY PnL
+df["daily_price_diff"] = df["Price"] - df["Close"]
+df["daily_pnl"] = df["daily_price_diff"] * df["quantity"]
+total_daily_pnl = df["daily_pnl"].sum()
+
+# TOTAL PnL
+df["total_price_diff"] = df["Price"] - df["entry_price"]
+df["total_pnl"] = df["total_price_diff"] * df["quantity"]
+total_pnl = df["total_pnl"].sum()
+
+logging.info(f"Total Daily PnL: {total_daily_pnl}")
+logging.info(f"Total PnL: {total_pnl}")
+
+dfreport = pd.DataFrame({
+    "Stock": df["Stock"],
+    "Quantity": df["quantity"],
+    "Entry Price": df["entry_price"],
+    "Current Price": df["Price"],
+    "Daily PnL": df["daily_pnl"],
+    "Total PnL": df["total_pnl"]
+})
