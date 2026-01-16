@@ -171,7 +171,7 @@ dfreport.to_excel(REPORTS_DIR / "portfolio_report.xlsx", index=False)
 
 logging.info("Excel report generated successfully.")
 
-hreshold = 1000
+threshold = 1000
 
 # Trigger Telegram alert if PnL exceeds threshold
 if total_pnl > threshold:
