@@ -24,3 +24,29 @@ load_dotenv()
 bottoken = os.getenv("BOT_TOKEN")
 chatid = os.getenv("CHAT_ID")
 
+# Create ticker objects
+apple = yf.Ticker("AAPL")
+tesla = yf.Ticker("TSLA")
+amazon = yf.Ticker("AMZN")
+nvidia = yf.Ticker("NVDA")
+intel = yf.Ticker("INTC")
+
+# Fetch current market prices
+appleprice = apple.info.get("regularMarketPrice")
+teslaprice = tesla.info.get("regularMarketPrice")
+amazonprice = amazon.info.get("regularMarketPrice")
+nvidiaprice = nvidia.info.get("regularMarketPrice")
+intelprice = intel.info.get("regularMarketPrice")
+
+
+# Fetch previous trading day's close prices
+def get_previous_close(ticker):
+    history = ticker.history(period="7d")["Close"].dropna()
+    return history.iloc[-2]
+
+
+apple_close = get_previous_close(apple)
+tesla_close = get_previous_close(tesla)
+amazon_close = get_previous_close(amazon)
+nvidia_close = get_previous_close(nvidia)
+intel_close = get_previous_close(intel)
