@@ -1,67 +1,74 @@
 # Portfolio Tracker & PnL Monitoring Bot
 
-## Project Objective
+This repository contains a comprehensive Python-based automation system designed to track financial portfolios in real-time. It automates market data collection, calculates daily and total PnL metrics, manages a historical price database, and triggers automated alerts based on portfolio performance.
 
-This project is a Python-based portfolio tracking and profit & loss (PnL) monitoring system designed to automate the collection of market prices, store historical price data, calculate portfolio performance metrics, and generate automated reports and alerts.
+# 📌 Problem & Solution
+Manually tracking multiple stock positions and calculating real-time P&L across different entry points is labor-intensive and prone to calculation errors. Investors need a centralized system that bridges the gap between live market data, historical records, and instant risk notifications.
 
-The system retrieves near real-time (intraday) and historical stock prices using the yfinance API, stores daily price snapshots in a SQLite database, calculates daily and total PnL based on portfolio positions, generates Excel reports, and sends Telegram alerts when predefined PnL thresholds are exceeded.
+This automation bot:
 
-The project aims to simulate a lightweight portfolio monitoring tool similar to those used in professional trading and risk management environments and is intended as a simplified prototype and learning-oriented system rather than a production trading platform.
+Eliminates manual price updates by fetching live market data via the Yahoo Finance API.
 
-## Technologies Used
+Enforces data persistence by storing daily price snapshots in a structured SQLite database using SQLAlchemy ORM.
 
-Python: Core language for data processing, automation, and orchestration.
+Automates complex P&L calculations by merging live market prices with static portfolio positions (CSV).
 
-Pandas: Used for data manipulation, portfolio calculations, and report generation.
+Streamlines reporting and risk management through automated Excel generation and real-time Telegram alerts for PnL thresholds.
 
-Yfinance: Retrieves intraday and historical stock market prices from Yahoo Finance.
+# 🛠 Tech Stack
+**Python:** Core engine for data orchestration and automation.
 
-SQLAlchemy: ORM-based interaction with the SQLite database.
+**Pandas:** For high-performance data manipulation and PnL calculations.
 
-SQLite: Lightweight relational database for storing daily stock price snapshots.
+**yFinance:** To retrieve intraday and historical market data.
 
-Logging: Tracks execution flow, database operations, and alert conditions.
+**SQLAlchemy (ORM):** For database schema management and secure data persistence.
 
-Requests: Sends HTTP requests to the Telegram Bot API for automated PnL alerts.
+**SQLite:** Lightweight relational storage for historical price snapshots.
 
-Excel (openpyxl): Generates structured portfolio performance reports.
+**Requests:** To facilitate real-time communication with the Telegram Bot API.
 
-Dotenv: Manages sensitive configuration values such as API tokens.
+**Excel (openpyxl):** For generating structured portfolio performance reports.
 
-## How to Run
+# ⚙️ Core Automation Workflow
+**Data Ingestion:** Fetches current and previous close prices for the target ticker list.
 
-1. Install the required dependencies:
+**Persistence:** Checks for existing records and commits new price snapshots to the SQLite database.
 
+**Analytics:** Merges database records with portfolio CSV data to calculate Daily and Total PnL.
+
+**Reporting & Alerts:** Generates a professional Excel report and triggers a Telegram notification if PnL thresholds are exceeded.
+
+# 📊 Example Output
+Upon execution, the bot provides a structured summary of the portfolio status and execution flow:
+
+```
+INFO:root:5 new stock records inserted.
+INFO:root:Total Daily PnL: 105.35
+INFO:root:Total PnL: 479.14
+INFO:root:Excel report generated successfully.
+INFO:root:PnL threshold not reached.
+
+   Stock   Price   Close  Quantity  Entry Price  Daily PnL  Total PnL
+0   AAPL  260.48  260.49         5       234.00      -0.05     132.40
+1   TSLA  348.95  345.62        10       403.00      33.30    -540.50
+2   AMZN  238.38  233.65         8       218.00      37.84     163.04
+```
+
+# 🚀 How to Run
+1.Configure your .env file with BOT_TOKEN and CHAT_ID.
+
+
+
+2.Install dependencies:
+
+```
 pip install -r requirements.txt
+```
+
+3.Run the automation:
 
 
-2. Configure environment variables in a .env file:
-
-BOT_TOKEN=your_telegram_bot_token 
-CHAT_ID=your_chat_id
-
-
-3. Run the portfolio tracker script:
-
+```
 python src/portfolio_tracker.py
-
-
-4. After execution, check the SQLite database (financial_data.db) for stored stock prices, review the terminal output for portfolio PnL calculations, verify the generated portfolio_report.xlsx file, and confirm that a Telegram alert is sent if the defined PnL threshold is exceeded.
-
-## Why This Is Valuable for a Hedge Fund
-
-- Automates portfolio monitoring and reduces manual tracking effort
-
-- Demonstrates end-to-end data flow: API → database → analytics → reporting → alerts
-
-- Simulates real-world portfolio PnL calculation logic
-
-- Provides a foundation for:
-
-   - Risk monitoring
-
-   - Strategy performance tracking
-
-   - Alert-driven decision-making
-
-- Easily extensible to larger portfolios, additional asset classes, or scheduled execution
+```
